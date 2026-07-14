@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { Link, NavLink, useNavigate, useLocation } from "react-router-dom";
-import { Button, Avatar } from "@heroui/react";
+import { Button } from "@heroui/react";
 import { 
     Menu, X, LayoutDashboard, Users, Megaphone, 
-    FileText, Wrench, CreditCard, ShieldAlert, LogOut, Building 
+    FileText, Wrench, CreditCard, ShieldAlert, LogOut, Building, User 
 } from "lucide-react";
 import toast from "react-hot-toast";
 import useAuthStore from "../store/useAuthStore";
@@ -109,19 +109,12 @@ export default function DashboardLayout({ children }) {
                     })}
                 </nav>
 
-                {/* User Card Profile Footer */}
+                {/* User Info Footer (No Avatar) */}
                 <div className="p-4 border-t border-slate-100 bg-slate-50/30 flex flex-col gap-3">
-                    <div className="flex items-center gap-3 px-2">
-                        <Avatar
-                            name={user?.fullName || "User"}
-                            color="primary"
-                            size="sm"
-                            className="font-semibold shadow-sm"
-                        />
-                        <div className="overflow-hidden">
-                            <span className="font-semibold text-slate-700 text-sm block truncate">{user?.fullName}</span>
-                            <span className="text-xs text-slate-400 font-medium capitalize block">{user?.role?.replace("_", " ")}</span>
-                        </div>
+                    <div className="px-2">
+                        <span className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider block">Signed In As</span>
+                        <span className="font-bold text-slate-700 text-sm block truncate mt-0.5">{user?.fullName}</span>
+                        <span className="text-xs text-indigo-600 font-semibold capitalize block mt-0.5">{user?.role?.replace("_", " ")}</span>
                     </div>
                     <Button
                         onClick={handleLogout}
@@ -185,18 +178,12 @@ export default function DashboardLayout({ children }) {
                     })}
                 </nav>
 
+                {/* Mobile User card profile footer */}
                 <div className="p-4 border-t border-slate-100 bg-slate-50/30 flex flex-col gap-3">
-                    <div className="flex items-center gap-3 px-2">
-                        <Avatar
-                            name={user?.fullName || "User"}
-                            color="primary"
-                            size="sm"
-                            className="font-semibold shadow-sm"
-                        />
-                        <div className="overflow-hidden">
-                            <span className="font-semibold text-slate-700 text-sm block truncate">{user?.fullName}</span>
-                            <span className="text-xs text-slate-400 font-medium capitalize block">{user?.role?.replace("_", " ")}</span>
-                        </div>
+                    <div className="px-2">
+                        <span className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider block">Signed In As</span>
+                        <span className="font-bold text-slate-700 text-sm block truncate mt-0.5">{user?.fullName}</span>
+                        <span className="text-xs text-indigo-600 font-semibold capitalize block mt-0.5">{user?.role?.replace("_", " ")}</span>
                     </div>
                     <Button
                         onClick={handleLogout}
@@ -227,17 +214,14 @@ export default function DashboardLayout({ children }) {
                         </h2>
                     </div>
 
-                    <div className="flex items-center gap-4">
-                        <div className="text-right md:block hidden">
-                            <span className="font-semibold text-slate-700 text-xs block">{user?.fullName}</span>
-                            <span className="text-[9px] text-slate-400 font-bold uppercase tracking-wider block">{user?.role?.replace("_", " ")}</span>
+                    <div className="flex items-center gap-3">
+                        <div className="text-right">
+                            <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Role Scope</span>
+                            <span className="font-bold text-indigo-600 text-xs capitalize block">{user?.role?.replace("_", " ")}</span>
                         </div>
-                        <Avatar
-                            name={user?.fullName || "User"}
-                            color="primary"
-                            size="sm"
-                            className="font-semibold shadow-sm cursor-pointer"
-                        />
+                        <div className="h-8 w-8 flex items-center justify-center rounded-lg bg-slate-100 text-slate-500">
+                            <User size={16} />
+                        </div>
                     </div>
                 </header>
 
