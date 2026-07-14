@@ -1,5 +1,8 @@
 # Society Management System
 
+> [!NOTE]
+> The backend server is deployed live on a **Render** instance. Since it is hosted on a free tier, the first API request may experience a warm-up delay of 30-40 seconds, after which it resolves instantly.
+
 A comprehensive, role-based residential society management application designed to streamline property operations, manage billing/invoices, log residents and committee members registries, report complaints/grievances, assign service tasks, and provide immutable system activity audit logs.
 
 ---
@@ -54,6 +57,86 @@ Society-Management-System/
 │   │   └── main.jsx          # React app mount entrypoint
 │   └── package.json          # Frontend dependencies
 └── README.md                 # Project guide (this file)
+```
+
+---
+
+## 📊 Database Schema Design
+
+The application utilizes a fully normalized MongoDB schema designed with clean relations and constraints:
+
+```mermaid
+erDiagram
+    USER {
+        ObjectId id PK
+        string fullName
+        string email
+        string password
+        string role
+        string phone
+        string unitNumber
+        string block
+        string ownershipStatus
+        string designation
+        boolean isActive
+        boolean isDeleted
+    }
+    BILL {
+        ObjectId id PK
+        ObjectId resident FK
+        number amount
+        date dueDate
+        string billingPeriod
+        string status
+        boolean isDeleted
+    }
+    PAYMENT {
+        ObjectId id PK
+        ObjectId bill FK
+        ObjectId resident FK
+        number amountPaid
+        string paymentMethod
+        string transactionId
+        ObjectId recordedBy FK
+    }
+    COMPLAINT {
+        ObjectId id PK
+        string title
+        string description
+        string imageUrl
+        string imageKitFileId
+        string status
+        ObjectId raisedBy FK
+        ObjectId assignedTo FK
+        boolean isDeleted
+    }
+    SERVICE_REQUEST {
+        ObjectId id PK
+        string title
+        string description
+        string category
+        string status
+        ObjectId raisedBy FK
+        ObjectId assignedTo FK
+        boolean isDeleted
+    }
+    AUDIT_LOG {
+        ObjectId id PK
+        string action
+        ObjectId performedBy FK
+        string details
+        string ipAddress
+    }
+
+    USER ||--o{ BILL : "receives"
+    USER ||--o{ PAYMENT : "pays"
+    USER ||--o{ COMPLAINT : "raises"
+    USER ||--o{ COMPLAINT : "is assigned to"
+    USER ||--o{ SERVICE_REQUEST : "submits"
+    USER ||--o{ SERVICE_REQUEST : "is assigned to"
+    USER ||--o{ AUDIT_LOG : "triggers"
+    
+    BILL ||--o{ PAYMENT : "settled by"
 ```
 
 ---
