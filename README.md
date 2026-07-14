@@ -1,69 +1,144 @@
-# Society Management System (Backend)
+# Society Management System
 
-> [!NOTE]
-> The backend is deployed live on a free **Render** instance at: **[https://society-management-system-54lq.onrender.com](https://society-management-system-54lq.onrender.com)**.
-> Since it is hosted on Render's free tier, the server goes to sleep after 15 minutes of inactivity. The first API request may take **30-40 seconds** to wake up (cold-start), after which subsequent requests will resolve instantly.
-
-The **Society Management System** is a modular web-based application designed to streamline residential society operations, manage user profiles, billing/invoices, complaints, service requests, announcements, and audit trails.
-
-This backend project implements **Role-Based Access Control (RBAC)** across three roles: **Admin**, **Committee Member**, and **Resident**.
+A comprehensive, role-based residential society management application designed to streamline property operations, manage billing/invoices, log residents and committee members registries, report complaints/grievances, assign service tasks, and provide immutable system activity audit logs.
 
 ---
 
 ## 🛠️ Technology Stack
-*   **Runtime Environment**: Node.js
-*   **Web Framework**: Express (v5.x)
-*   **Database**: MongoDB (Object Data Modeling via Mongoose)
-*   **Authentication**: JSON Web Tokens (JWT) & Bcryptjs (Password Hashing)
-*   **File Uploads**: Multer (Memory Buffer) & ImageKit Node SDK (`@imagekit/nodejs`)
-*   **Input Validation**: Express-Validator (Route-level Schema Validations)
+*   **Frontend Framework**: React (v19.x) bootstrapped via **Vite** (v6.x)
+*   **Styling (CSS)**: Vanilla CSS with custom theme variables, utility classes, and glassmorphic designs
+*   **Routing**: React Router DOM (v7.x) with role-based Route Guards
+*   **Icons**: Lucide React
+*   **Backend Server**: Express (Node.js framework)
+*   **Database**: MongoDB Atlas (managed via Mongoose ODM)
+*   **Auth System**: JSON Web Tokens (JWT) stored in HTTP-Only secure cookies with Bcrypt password hashing
+*   **Storage Service**: ImageKit integration for secure complaint photo attachments (or simulated fallback)
 
 ---
 
-## ⚙️ Environment Variables Setup
+## 👥 Role-Based Feature Matrices
 
-Create a `.env` file in the `backend/` directory and fill in your credentials:
+| Role Profile | Available Features / Views |
+| :--- | :--- |
+| **Resident Flat Owner** | View dashboard metrics, view outstanding invoices, pay bills online, review historical transaction receipts, log maintenance complaints (with image attachments), raise service tasks (plumbing, electrical), view community notices, edit personal profile credentials. |
+| **Committee Member** | View board dashboard, read and manage assigned resident grievances, append diagnostic comments, self-assign open complaints, mark service tasks as resolved, publish notice bulletins to all residents. |
+| **System Administrator** | Access executive dashboards (collected funds, outstanding dues, registered headcounts), manage Resident CRUD registry (activate/deactivate/soft-delete), manage Committee CRUD designations, generate manual or bulk bills, log manual check/transfer payments, publish society announcements, browse immutable system audit log trails. |
 
+---
+
+## 📂 Folder Structure
+
+```
+Society-Management-System/
+├── backend/
+│   ├── src/
+│   │   ├── controllers/      # Request handlers (auth, bills, complaints, audit logs)
+│   │   ├── db/               # Connection setup & database seed scripts
+│   │   ├── middlewares/      # auth check, schema validation, active state checks
+│   │   ├── models/           # Mongoose schemas (User, Bill, Complaint, AuditLog, Payment)
+│   │   ├── routes/           # REST endpoints
+│   │   ├── services/         # ImageKit cloud attachments service
+│   │   └── utils/            # Non-blocking async audit logs utility
+│   ├── tests/                # Integration tests (Supertest & Jest)
+│   └── package.json          # Backend dependencies
+├── frontend/
+│   ├── src/
+│   │   ├── api/              # API wrapper client handlers
+│   │   ├── components/
+│   │   │   ├── layout/       # AppShell, Navigation Drawer
+│   │   │   └── ui/           # Button, Card, Pagination, StampBadge, Spinner
+│   │   ├── context/          # Authentication state context
+│   │   ├── pages/            # Role dashboards, billing desks, registries, 404
+│   │   ├── routes.jsx        # Routing configuration
+│   │   ├── index.css         # Typography, HSL themes, scrollbar locks
+│   │   └── main.jsx          # React app mount entrypoint
+│   └── package.json          # Frontend dependencies
+└── README.md                 # Project guide (this file)
+```
+
+---
+
+## ⚙️ Prerequisites & Environment Variables
+
+### Backend Environment Variables (`backend/.env`)
+Create a `.env` file inside the `backend/` directory:
 ```env
-# Server settings
 PORT=3000
 NODE_ENV=development
-
-# Database connection
-MONGO_URI=mongodb://your_mongodb_connection_uri
-
-# Token settings
+MONGO_URI=mongodb://localhost:27017/society-db
 JWT_SECRET=your_jwt_secret_key_here
 JWT_EXPIRES_IN=24h
 
-# ImageKit integration (Mandatory for complaint uploads)
+# ImageKit keys (Optional; falls back to simulation mock if not supplied)
 IMAGEKIT_PUBLIC_KEY=your_imagekit_public_key
 IMAGEKIT_PRIVATE_KEY=your_imagekit_private_key
 IMAGEKIT_URL_ENDPOINT=https://ik.imagekit.io/your_imagekit_id/
 ```
 
-*Note: If ImageKit keys are not present, the system defaults automatically to simulated mock uploads during testing.*
+### Frontend environment configuration
+* The frontend reads from the development proxy or environment configs pointing to `http://localhost:3000`.
 
 ---
 
-## 🚀 Getting Started (Installation & Execution)
+## 🚀 Getting Started
 
-1.  **Navigate into the backend directory**:
-    ```bash
-    cd backend
-    ```
-2.  **Install dependencies**:
-    ```bash
-    npm install
-    ```
-3.  **Start development server**:
-    ```bash
-    npm run dev
-    ```
+### 1. Database & Admin Seeding
+1. Install **Node.js** (v18+) and ensure **MongoDB** is running locally or connect to a MongoDB Atlas cluster.
+2. Navigate to the backend folder and install packages:
+   ```bash
+   cd backend
+   npm install
+   ```
+3. Run the database seed script to establish the first System Administrator profile:
+   ```bash
+   npm run seed
+   ```
+   * *Seeded admin credentials will be logged to the console.*
+
+### 2. Start the Backend Server
+```bash
+npm run dev
+```
+* The backend API server starts at `http://localhost:3000`.
+
+### 3. Start the Frontend Client
+1. Open a new terminal pane, navigate into the frontend folder, and install packages:
+   ```bash
+   cd frontend
+   npm install
+   ```
+2. Launch the Vite development server:
+   ```bash
+   npm run dev
+   ```
+* The React application will open locally at `http://localhost:5173`.
 
 ---
 
-## 📘 Full API Documentation Guide (Copy-Paste Ready)
+## 🔑 Demo Access Credentials
+Use the following seed credentials for demo reviews:
+
+*   **System Administrator**:
+    *   **Email**: `ansh@example.com`
+    *   **Password**: `admin123`
+*   **Resident flat account** (Manual Registration or Admin Created):
+    *   Create a resident via `ansh@example.com` at the `/admin/residents` page, copy the generated credentials receipt, and log in.
+    *   **Example Email**: `jane.resident@example.com`
+    *   **Password**: `residentpassword123`
+*   **Committee representative** (Admin Created):
+    *   Create a committee member via `/admin/committee`, copy the generated receipt, and log in.
+    *   **Example Email**: `rahul@society.com`
+    *   **Password**: `committee123`
+
+---
+
+## ⚠️ Known Limitations
+*   **Simulated Payment Gateway**: Paying a bill online does not trigger live credit card transactions; it prompts for simulated transaction references and updates database ledger records instantly upon submission.
+*   **Manual verification**: Automated browser testing (via Playwright or Selenium) was unavailable during development. Verification and responsive layouts checks were performed manually throughout across desktop, tablet, and mobile viewports.
+
+---
+
+## 📘 Full API Documentation Guide
 
 All routes require requests to send and receive JSON data. Authentication tokens are managed automatically via secure HttpOnly cookies (`token`).
 
@@ -667,32 +742,8 @@ All routes require requests to send and receive JSON data. Authentication tokens
 
 ---
 
-## 🧪 Automated Integration Testing
-
-We have written a comprehensive integration test suite using **Jest** and **Supertest** to test critical workflows (Authentication, Privilege Escalation Prevention, and Payment Validation Rules).
-
-### Running the Tests:
-1. Make sure MongoDB Atlas is connected (configured via your local `.env` variables).
-2. Run the following command inside the `backend/` directory:
-   ```bash
-   npm run test
-   ```
-
-The test suite validates:
-*   Standard user registration.
-*   Security check that denies registration payload privilege escalation (downgrading role to `"resident"`).
-*   User login cookie setting.
-*   Authorized profile query (`/me`).
-*   Rejection of online payment records when the required `transactionId` is missing.
-
----
-
 ## 🛡️ Security & Integrity Engineering Patches
-
-To meet production security standards, the following patches were built:
-
 1.  **Privilege Escalation Protection**: Public registration endpoints strictly downgrade the user's role to `"resident"`. Only designated Admin endpoints are allowed to create administrative users or committee members.
 2.  **Payment Reference Integrity**: Manual bank transfers (`"online"`) and cheque payment methods strictly validate the presence of a reference string (`transactionId`) before payment records are logged.
 3.  **ACID Transactions**: Using Mongoose session transactions, recording payments and updating bill statuses to `"paid"` are performed atomically. Any single-operation failure triggers a database rollback.
 4.  **Auto-Filter Soft-Deletes**: Added query middleware hooks to all Mongoose schemas to automatically filter out soft-deleted (`isDeleted: true`) records on all `find` operations while retaining image URLs for financial audits.
-
