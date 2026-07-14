@@ -15,10 +15,11 @@ function buildToken(user) {
 }
 
 function setAuthCookie(res, token) {
+    const isProd = process.env.NODE_ENV === "production";
     res.cookie("token", token, {
         httpOnly: true,
-        sameSite: "lax",
-        secure: process.env.NODE_ENV === "production",
+        sameSite: isProd ? "none" : "lax",
+        secure: isProd,
     });
 }
 
