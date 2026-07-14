@@ -1,5 +1,9 @@
 # Society Management System (Backend)
 
+> [!NOTE]
+> The backend is deployed live on a free **Render** instance at: **[https://society-management-system-54lq.onrender.com](https://society-management-system-54lq.onrender.com)**.
+> Since it is hosted on Render's free tier, the server goes to sleep after 15 minutes of inactivity. The first API request may take **30-40 seconds** to wake up (cold-start), after which subsequent requests will resolve instantly.
+
 The **Society Management System** is a modular web-based application designed to streamline residential society operations, manage user profiles, billing/invoices, complaints, service requests, announcements, and audit trails.
 
 This backend project implements **Role-Based Access Control (RBAC)** across three roles: **Admin**, **Committee Member**, and **Resident**.
