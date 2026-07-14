@@ -5,6 +5,16 @@
 
 A comprehensive, role-based residential society management application designed to streamline property operations, manage billing/invoices, log residents and committee members registries, report complaints/grievances, assign service tasks, and provide immutable system activity audit logs.
 
+## 🧠 Engineering Decisions & AI-Assisted Development
+
+This project was built using modern development workflows, leveraging agentic AI assistance for velocity while maintaining strict manual control over architectural design, security logic, and layout engineering.
+
+*   **Role of AI**: AI was utilized as an advanced pair-programmer to accelerate template boilerplates, generate mock endpoints, write integration tests (`Jest` and `Supertest`), compile the Postman collection payloads, and format markdown documentations.
+*   **Engineering Oversight & Manual Refinements**:
+    *   **RBAC Security**: Structured route-level role checkers (`ProtectedRoute`) and Mongoose query middleware hooks to automatically filter soft-deleted profiles while retaining financial records for audit logs.
+    *   **Layout Re-Architecture**: Replaced sticky positioning with absolute screen height boundaries (`h-screen w-screen overflow-hidden`) on layout containers to resolve horizontal side-scrolling shifts.
+    *   **Active Session Checks**: Refactored the core authentication middleware to run real-time account status audits on every request, blocking deactivated sessions instantly.
+
 ---
 
 ## 🛠️ Technology Stack
