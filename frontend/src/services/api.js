@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-    baseURL: import.meta.env.VITE_API_URL || "https://society-management-system-54lq.onrender.com",
+    baseURL: import.meta.env.VITE_API_URL || "http://localhost:3000",
     withCredentials: true, // Crucial: enables automatic handling of HttpOnly cookies (session token)
 });
 
