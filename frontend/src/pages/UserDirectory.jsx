@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { 
     Table, TableHeader, TableColumn, TableBody, TableRow, TableCell,
-    Button, Input, Select, ListBox, Label, Spinner, Modal 
+    Button, Input, Select, ListBox, Label, Spinner, Modal, RadioGroup, Radio 
 } from "@heroui/react";
 import { Users, UserPlus, Trash2, Mail, Phone, Shield, Building, Key } from "lucide-react";
 import toast from "react-hot-toast";
@@ -303,32 +303,19 @@ export default function UserDirectory() {
                                     <form onSubmit={handleSubmit(onSubmit)}>
                                         <Modal.Body className="flex flex-col gap-4">
                                             {/* Selector for Registration type */}
-                                            <div className="flex flex-col gap-1.5">
-                                                <span className="text-sm font-semibold text-slate-500">Member Role Type</span>
-                                                <div className="flex gap-4">
-                                                    <label className="flex items-center gap-2 cursor-pointer font-semibold text-sm">
-                                                        <input 
-                                                            type="radio" 
-                                                            name="regUserType" 
-                                                            value="resident" 
-                                                            checked={regUserType === "resident"}
-                                                            onChange={() => setRegUserType("resident")}
-                                                            className="text-indigo-600 focus:ring-indigo-500"
-                                                        />
-                                                        Resident
-                                                    </label>
-                                                    <label className="flex items-center gap-2 cursor-pointer font-semibold text-sm">
-                                                        <input 
-                                                            type="radio" 
-                                                            name="regUserType" 
-                                                            value="committee" 
-                                                            checked={regUserType === "committee"}
-                                                            onChange={() => setRegUserType("committee")}
-                                                            className="text-indigo-600 focus:ring-indigo-500"
-                                                        />
-                                                        Committee Member
-                                                    </label>
-                                                </div>
+                                            <div className="flex flex-col gap-1">
+                                                <RadioGroup
+                                                    label="Member Role Type"
+                                                    value={regUserType}
+                                                    onValueChange={setRegUserType}
+                                                    orientation="horizontal"
+                                                    classNames={{
+                                                        label: "text-sm font-semibold text-slate-500 mb-1"
+                                                    }}
+                                                >
+                                                    <Radio value="resident">Resident</Radio>
+                                                    <Radio value="committee">Committee Member</Radio>
+                                                </RadioGroup>
                                             </div>
 
                                             {/* Common Fields */}

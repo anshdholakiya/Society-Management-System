@@ -105,7 +105,7 @@ export default function Complaints() {
 
     const handleAssignComplaint = async (data) => {
         try {
-            const response = await api.patch(`/api/complaints/${selectedComplaint._id}/assign`, {
+            const response = await api.post(`/api/complaints/${selectedComplaint._id}/assign`, {
                 assignedTo: data.assignedTo
             });
             if (response.data?.success) {
