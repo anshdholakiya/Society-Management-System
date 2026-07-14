@@ -8,10 +8,10 @@ const router = express.Router();
 
 router.use(authenticate);
 
-// Admin-only record payment with validation
+// Record payment with validation (Admin manual cash/cheque, or Resident simulated online card/UPI)
 router.post(
     "/", 
-    authorizeRoles("admin"), 
+    authorizeRoles("admin", "resident"), 
     [
         body("bill").isMongoId().withMessage("Valid bill ID is required"),
         body("amountPaid").isFloat({ min: 0 }).withMessage("Amount paid must be a positive number"),
@@ -22,7 +22,7 @@ router.post(
     paymentController.recordPayment
 );
 
-// Retrieve payment records
+// Retrieve payment records (scoping handled in controller)
 router.get("/", paymentController.getPayments);
 
 module.exports = router;

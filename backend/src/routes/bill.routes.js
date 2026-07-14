@@ -13,13 +13,28 @@ router.post(
     "/", 
     authorizeRoles("admin"), 
     [
-        body("resident").isMongoId().withMessage("Valid resident user ID is required"),
-        body("amount").isFloat({ min: 0 }).withMessage("Amount must be a positive number"),
-        body("dueDate").isISO8601().withMessage("Valid due date (ISO8601 format) is required"),
+        body("resident").isMongoId().withMessage("Valid resident ID is required"),
+        body("amount").isNumeric().withMessage("Amount must be a number"),
+        body("dueDate").isISO8601().toDate().withMessage("Valid due date is required"),
         body("billingPeriod").trim().notEmpty().withMessage("Billing period is required"),
+        body("category").optional().isIn(["maintenance", "water", "electricity", "other"]).withMessage("Invalid category type"),
         validateRequest
     ],
     billController.createBill
+);
+
+// Admin-only bulk auto-generation
+router.post(
+    "/bulk",
+    authorizeRoles("admin"),
+    [
+        body("amount").isNumeric().withMessage("Amount must be a number"),
+        body("dueDate").isISO8601().toDate().withMessage("Valid due date is required"),
+        body("billingPeriod").trim().notEmpty().withMessage("Billing period is required"),
+        body("category").optional().isIn(["maintenance", "water", "electricity", "other"]).withMessage("Invalid category type"),
+        validateRequest
+    ],
+    billController.bulkGenerateBills
 );
 
 // Retrieve bills

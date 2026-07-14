@@ -161,7 +161,7 @@ async function getCommitteeMembers(req, res) {
 // Update User details (Admin only, or user updating their own profile phone/password)
 async function updateUser(req, res) {
     const { id } = req.params;
-    const { fullName, phone, unitNumber, block, ownershipStatus, designation, isActive } = req.body;
+    const { fullName, phone, unitNumber, block, ownershipStatus, designation, isActive, password } = req.body;
 
     const user = await userModel.findById(id);
     if (!user || user.isDeleted) {
@@ -176,8 +176,18 @@ async function updateUser(req, res) {
         return res.status(403).json({ message: "Forbidden: You do not have permission to update this user" });
     }
 
+    // Self lockout safety check
+    if (isSelfUpdate && isActive === false) {
+        return res.status(400).json({ message: "You cannot suspend your own admin account access" });
+    }
+
     if (fullName !== undefined) user.fullName = fullName;
     if (phone !== undefined) user.phone = phone;
+
+    // Password reset check (Admin or self)
+    if (password !== undefined) {
+        user.password = await bcrypt.hash(password, 10);
+    }
 
     // Admin-only updates
     if (isAdmin) {
@@ -214,20 +224,60 @@ async function updateUser(req, res) {
     });
 }
 
-// Delete User (Soft Delete, Admin only)
+// Delete User (Soft Delete with database relationship checks, Admin only)
 async function deleteUser(req, res) {
     const { id } = req.params;
+
+    // Self lockout check
+    if (req.user.id === id) {
+        return res.status(400).json({ message: "You cannot delete your own admin account" });
+    }
 
     const user = await userModel.findById(id);
     if (!user || user.isDeleted) {
         return res.status(404).json({ message: "User not found" });
     }
 
+    // Dynamic relationship checks to prevent orphaning details
+    const billModel = require("../models/bill.model");
+    const complaintModel = require("../models/complaint.model");
+    const serviceRequestModel = require("../models/serviceRequest.model");
+    const announcementModel = require("../models/announcement.model");
+
+    let hasRelations = false;
+
+    if (user.role === "resident") {
+        const [hasBills, hasComplaints, hasRequests] = await Promise.all([
+            billModel.exists({ resident: id, isDeleted: false }),
+            complaintModel.exists({ resident: id, isDeleted: false }),
+            serviceRequestModel.exists({ raisedBy: id, isDeleted: false })
+        ]);
+        if (hasBills || hasComplaints || hasRequests) {
+            hasRelations = true;
+        }
+    } else if (user.role === "committee_member") {
+        const [hasAssignedComplaints, hasAssignedRequests, hasAnnouncements] = await Promise.all([
+            complaintModel.exists({ assignedTo: id, isDeleted: false }),
+            serviceRequestModel.exists({ assignedTo: id, isDeleted: false }),
+            announcementModel.exists({ publishedBy: id })
+        ]);
+        if (hasAssignedComplaints || hasAssignedRequests || hasAnnouncements) {
+            hasRelations = true;
+        }
+    }
+
+    if (hasRelations) {
+        return res.status(400).json({ 
+            message: "Cannot delete account: This user has historical records (bills, complaints, announcements, or service requests) linked to their profile. Please deactivate/suspend their account instead." 
+        });
+    }
+
+    // Soft delete target user
     user.isDeleted = true;
     user.isActive = false;
     await user.save();
 
-    await logAction("USER_DELETED", req.user.id, `Soft-deleted user: ${user.email}`, req);
+    await logAction("USER_DELETED", req.user.id, `Soft-deleted user account: ${user.email}`, req);
 
     return res.status(200).json({
         success: true,

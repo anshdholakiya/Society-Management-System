@@ -19,7 +19,11 @@ async function createComplaint(req, res) {
             imageUrl = uploadResult.url;
             imageKitFileId = uploadResult.fileId;
         } catch (uploadError) {
-            return res.status(500).json({ message: "Failed to upload image to cloud storage: " + uploadError.message });
+            console.error("ImageKit Controller Upload Error Details:", uploadError);
+            return res.status(400).json({ 
+                success: false, 
+                message: "Image upload failed: " + uploadError.message 
+            });
         }
     }
 

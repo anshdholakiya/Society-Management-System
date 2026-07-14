@@ -22,6 +22,24 @@ const announcementSchema = new mongoose.Schema(
             enum: ["all", "residents", "committee"],
             default: "all",
         },
+        targetBlock: {
+            type: String,
+            default: "", // Empty string means all blocks
+        },
+        priority: {
+            type: String,
+            enum: ["normal", "important", "urgent"],
+            default: "normal",
+        },
+        expiresAt: {
+            type: Date,
+        },
+        imageUrl: {
+            type: String,
+        },
+        imageFileId: {
+            type: String,
+        },
     },
     {
         timestamps: true,

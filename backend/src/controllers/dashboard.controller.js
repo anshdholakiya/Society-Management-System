@@ -17,9 +17,9 @@ async function getAdminDashboard(req, res) {
     const resolvedComplaints = await complaintModel.countDocuments({ status: "resolved", isDeleted: false });
 
     // 3. Service request counts
-    const pendingRequests = await serviceRequestModel.countDocuments({ status: "pending", isDeleted: false });
+    const pendingRequests = await serviceRequestModel.countDocuments({ status: { $in: ["open", "assigned"] }, isDeleted: false });
     const progressRequests = await serviceRequestModel.countDocuments({ status: "in_progress", isDeleted: false });
-    const completedRequests = await serviceRequestModel.countDocuments({ status: "completed", isDeleted: false });
+    const completedRequests = await serviceRequestModel.countDocuments({ status: { $in: ["resolved", "closed"] }, isDeleted: false });
 
     // 4. Financial breakdown (Outstanding Bills & Collected Payments)
     const unpaidBillsAgg = await billModel.aggregate([

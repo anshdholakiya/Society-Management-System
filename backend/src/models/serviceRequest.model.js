@@ -1,5 +1,22 @@
 const mongoose = require("mongoose");
 
+const commentSchema = new mongoose.Schema({
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "user",
+        required: true,
+    },
+    comment: {
+        type: String,
+        required: true,
+        trim: true,
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now,
+    },
+});
+
 const serviceRequestSchema = new mongoose.Schema(
     {
         title: {
@@ -17,10 +34,15 @@ const serviceRequestSchema = new mongoose.Schema(
             required: true,
             trim: true,
         },
+        priority: {
+            type: String,
+            enum: ["low", "medium", "high"],
+            default: "medium",
+        },
         status: {
             type: String,
-            enum: ["pending", "approved", "rejected", "in_progress", "completed"],
-            default: "pending",
+            enum: ["open", "assigned", "in_progress", "resolved", "closed"],
+            default: "open",
         },
         raisedBy: {
             type: mongoose.Schema.Types.ObjectId,
@@ -32,6 +54,15 @@ const serviceRequestSchema = new mongoose.Schema(
             ref: "user",
             default: null,
         },
+        imageUrl: {
+            type: String,
+            default: "",
+        },
+        imageKitFileId: {
+            type: String,
+            default: "",
+        },
+        comments: [commentSchema],
         isDeleted: {
             type: Boolean,
             default: false,

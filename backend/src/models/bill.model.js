@@ -21,6 +21,11 @@ const billSchema = new mongoose.Schema(
             required: true, // e.g. "July 2026"
             trim: true,
         },
+        category: {
+            type: String,
+            enum: ["maintenance", "water", "electricity", "other"],
+            default: "maintenance",
+        },
         status: {
             type: String,
             enum: ["unpaid", "paid"],

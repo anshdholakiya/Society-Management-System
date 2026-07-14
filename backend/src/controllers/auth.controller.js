@@ -78,6 +78,7 @@ async function registerUser(req, res) {
             block: user.block,
             ownershipStatus: user.ownershipStatus,
             designation: user.designation,
+            isActive: user.isActive,
         },
     });
 }
@@ -119,6 +120,7 @@ async function loginUser(req, res) {
             block: user.block,
             ownershipStatus: user.ownershipStatus,
             designation: user.designation,
+            isActive: user.isActive,
         },
     });
 }

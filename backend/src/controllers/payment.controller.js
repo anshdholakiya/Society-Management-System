@@ -3,7 +3,7 @@ const paymentModel = require("../models/payment.model");
 const billModel = require("../models/bill.model");
 const { logAction } = require("../utils/auditLogger");
 
-// Record Payment (Admin only)
+// Record Payment (Admin manual cash/cheque entry, or Resident online gateway completion)
 async function recordPayment(req, res) {
     const { bill: billId, amountPaid, paymentMethod, transactionId } = req.body;
 
@@ -11,17 +11,23 @@ async function recordPayment(req, res) {
         return res.status(400).json({ message: "bill (ID), amountPaid, and paymentMethod are required" });
     }
 
-    // Patch 2: Enforce transactionId validation logic for online or cheque methods
+    const isResident = req.user.role === "resident";
+    const isAdmin = req.user.role === "admin";
+
+    // Gating check: Residents can only select 'online' method
+    if (isResident && paymentMethod !== "online") {
+        return res.status(400).json({ message: "Residents are only allowed to initiate online gateway payments." });
+    }
+
+    // Gating check: transactionId is required for online/cheque
     if (["online", "cheque"].includes(paymentMethod) && (!transactionId || !transactionId.trim())) {
         return res.status(400).json({ message: "transactionId is strictly required for online or cheque payment methods" });
     }
 
-    // Patch 3: ACID Mongoose Session & Transaction wrapping
     const session = await mongoose.startSession();
     session.startTransaction();
 
     try {
-        // Find the bill using transaction session
         const bill = await billModel.findOne({ _id: billId, isDeleted: false }).session(session);
         if (!bill) {
             await session.abortTransaction();
@@ -29,17 +35,25 @@ async function recordPayment(req, res) {
             return res.status(404).json({ message: "Bill not found" });
         }
 
+        // Security ownership check: residents can only pay their own bills
+        if (isResident && bill.resident.toString() !== req.user.id) {
+            await session.abortTransaction();
+            session.endSession();
+            return res.status(403).json({ message: "Forbidden: You cannot pay a bill belonging to another unit" });
+        }
+
+        // Double-payment protection: verify bill status is unpaid
         if (bill.status === "paid") {
             await session.abortTransaction();
             session.endSession();
             return res.status(400).json({ message: "This bill has already been paid" });
         }
 
-        // Mark the bill as paid within the transaction
+        // Mark the bill as paid
         bill.status = "paid";
         await bill.save({ session });
 
-        // Create the payment record within the transaction
+        // Record the payment
         const [payment] = await paymentModel.create(
             [
                 {
@@ -54,7 +68,6 @@ async function recordPayment(req, res) {
             { session }
         );
 
-        // Commit transaction and end session
         await session.commitTransaction();
         session.endSession();
 
@@ -66,10 +79,10 @@ async function recordPayment(req, res) {
             payment,
         });
     } catch (error) {
-        // Rollback transaction
         await session.abortTransaction();
         session.endSession();
-        throw error;
+        console.error("Payment recording transaction failed:", error);
+        return res.status(500).json({ message: "Failed to record payment: " + error.message });
     }
 }
 
@@ -93,7 +106,7 @@ async function getPayments(req, res) {
     const total = await paymentModel.countDocuments(query);
     const payments = await paymentModel.find(query)
         .populate("resident", "fullName email unitNumber block phone")
-        .populate("bill", "billingPeriod amount dueDate")
+        .populate("bill", "billingPeriod amount dueDate category")
         .populate("recordedBy", "fullName email role")
         .sort({ createdAt: -1 })
         .skip(skipCount)

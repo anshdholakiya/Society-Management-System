@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
+const userModel = require("../models/user.model");
 
-function authenticate(req, res, next) {
+async function authenticate(req, res, next) {
     const token = req.cookies.token;
 
     if (!token) {
@@ -9,6 +10,13 @@ function authenticate(req, res, next) {
 
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        
+        // Lookup user in DB to ensure account is active and not deleted
+        const user = await userModel.findOne({ _id: decoded.id, isDeleted: false });
+        if (!user || !user.isActive) {
+            return res.status(401).json({ message: "Unauthorized: Account is deactivated or deleted" });
+        }
+
         req.user = decoded;
         next();
     } catch (error) {

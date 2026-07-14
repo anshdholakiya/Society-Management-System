@@ -1,18 +1,39 @@
 const serviceRequestModel = require("../models/serviceRequest.model");
+const { uploadToImageKit } = require("../services/imagekit.service");
 const { logAction } = require("../utils/auditLogger");
 
-// Submit Service Request (Resident only)
+// Submit Service Request (Resident only, with optional image upload)
 async function createServiceRequest(req, res) {
-    const { title, description, category } = req.body;
+    const { title, description, category, priority = "medium" } = req.body;
 
     if (!title || !description || !category) {
         return res.status(400).json({ message: "title, description, and category are required" });
+    }
+
+    let imageUrl = "";
+    let imageKitFileId = "";
+
+    if (req.file) {
+        try {
+            const uploadResult = await uploadToImageKit(req.file.buffer, `service_${Date.now()}_${req.file.originalname}`);
+            imageUrl = uploadResult.url;
+            imageKitFileId = uploadResult.fileId;
+        } catch (uploadError) {
+            console.error("ImageKit Service Request Controller Upload Error Details:", uploadError);
+            return res.status(400).json({ 
+                success: false, 
+                message: "Image upload failed: " + uploadError.message 
+            });
+        }
     }
 
     const request = await serviceRequestModel.create({
         title,
         description,
         category,
+        priority,
+        imageUrl,
+        imageKitFileId,
         raisedBy: req.user.id,
     });
 
@@ -50,6 +71,7 @@ async function getServiceRequests(req, res) {
     const requests = await serviceRequestModel.find(query)
         .populate("raisedBy", "fullName email unitNumber block phone")
         .populate("assignedTo", "fullName email designation phone")
+        .populate("comments.user", "fullName role")
         .sort({ createdAt: -1 })
         .skip(skipCount)
         .limit(parseInt(limit));
@@ -63,16 +85,16 @@ async function getServiceRequests(req, res) {
     });
 }
 
-// Process / Update Service Request Status (Admin/Committee)
+// Process / Update Service Request Status & Comments (Admin/Committee)
 async function updateServiceRequestStatus(req, res) {
     const { requestId } = req.params;
-    const { status, assignedTo } = req.body;
+    const { status, assignedTo, comment } = req.body;
 
-    if (!status && !assignedTo) {
-        return res.status(400).json({ message: "Either status or assignedTo is required to update" });
+    if (!status && assignedTo === undefined && !comment) {
+        return res.status(400).json({ message: "Either status, assignedTo, or comment is required to update" });
     }
 
-    const request = await serviceRequestModel.findOne({ _id: requestId, isDeleted: false });
+    let request = await serviceRequestModel.findOne({ _id: requestId, isDeleted: false });
     if (!request) {
         return res.status(404).json({ message: "Service request not found" });
     }
@@ -89,9 +111,21 @@ async function updateServiceRequestStatus(req, res) {
     if (assignedTo !== undefined) {
         request.assignedTo = assignedTo || null;
     }
+    if (comment && comment.trim()) {
+        request.comments.push({
+            user: req.user.id,
+            comment: comment.trim(),
+        });
+    }
 
     await request.save();
     await logAction("SERVICE_REQUEST_UPDATED", req.user.id, `Updated service request "${request.title}" status to "${request.status}"`, req);
+
+    // Populate full details before returning response
+    request = await serviceRequestModel.findById(requestId)
+        .populate("raisedBy", "fullName email unitNumber block phone")
+        .populate("assignedTo", "fullName email designation phone")
+        .populate("comments.user", "fullName role");
 
     return res.status(200).json({
         success: true,
@@ -114,6 +148,14 @@ async function deleteServiceRequest(req, res) {
 
     if (!isOwner && !isAdmin) {
         return res.status(403).json({ message: "Forbidden: You cannot delete this service request" });
+    }
+
+    // Retraction business rule: Residents can only cancel/retract if the request is "open" or "assigned".
+    // If it is in_progress, resolved, or closed, they cannot cancel it. Admins can delete at any status.
+    if (isOwner && !isAdmin && ["in_progress", "resolved", "closed"].includes(request.status)) {
+        return res.status(400).json({ 
+            message: `Cannot retract request: This task is currently ${request.status.replace("_", " ")}.` 
+        });
     }
 
     request.isDeleted = true;

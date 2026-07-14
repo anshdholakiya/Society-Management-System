@@ -1,9 +1,5 @@
-let ImageKit;
-try {
-    ImageKit = require("imagekit");
-} catch (e) {
-    ImageKit = require("@imagekit/nodejs");
-}
+const ImageKit = require("@imagekit/nodejs");
+const { toFile } = require("@imagekit/nodejs");
 
 let imagekit = null;
 
@@ -45,8 +41,9 @@ async function uploadToImageKit(fileBuffer, fileName) {
     }
 
     try {
-        const response = await imagekit.upload({
-            file: fileBuffer,
+        const fileData = await toFile(fileBuffer, fileName);
+        const response = await imagekit.files.upload({
+            file: fileData,
             fileName: fileName,
             folder: "/society_management/complaints",
         });
@@ -73,7 +70,7 @@ async function deleteFromImageKit(fileId) {
     }
 
     try {
-        await imagekit.deleteFile(fileId);
+        await imagekit.files.delete(fileId);
         return true;
     } catch (error) {
         console.error("ImageKit deletion error:", error);
