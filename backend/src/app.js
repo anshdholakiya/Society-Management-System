@@ -24,9 +24,14 @@ const app = express();
 app.use(helmet());
 
 // 2. CORS setup with credentials (allows frontends to transmit HttpOnly session cookies)
+const allowedOrigins = ["http://localhost:5173", "http://localhost:5174", "http://localhost:5175"];
+if (process.env.CLIENT_URL) {
+    allowedOrigins.push(process.env.CLIENT_URL);
+}
+
 app.use(
     cors({
-        origin: process.env.CLIENT_URL || "http://localhost:5173",
+        origin: allowedOrigins,
         credentials: true,
     })
 );
