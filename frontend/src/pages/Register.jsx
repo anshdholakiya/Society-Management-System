@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { useNavigate, Link as RouterLink } from "react-router-dom";
 import { Card, CardHeader, CardContent, CardFooter, Input, Button, Link, Select, ListBox, ListBoxItem, Label } from "@heroui/react";
@@ -7,7 +7,7 @@ import toast from "react-hot-toast";
 import useAuthStore from "../store/useAuthStore";
 
 export default function Register() {
-    const { register: registerAuth, isLoading } = useAuthStore();
+    const { register: registerAuth, isLoggingIn } = useAuthStore();
     const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
 
@@ -199,7 +199,7 @@ export default function Register() {
                             type="submit"
                             color="primary"
                             className="mt-4 font-semibold shadow-md shadow-indigo-200"
-                            isLoading={isLoading}
+                            isLoading={isLoggingIn}
                         >
                             Create Account
                         </Button>

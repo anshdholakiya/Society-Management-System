@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { 
     Table, TableHeader, TableColumn, TableBody, TableRow, TableCell,
     Button, Input, Select, ListBox, ListBoxItem, Label, Spinner, Modal,
     Dropdown, DropdownTrigger, DropdownMenu, DropdownItem
 } from "@heroui/react";
-import { Wrench, Plus, Clipboard, CheckCircle2, AlertCircle, Calendar, User, MoreVertical } from "lucide-react";
+import { Wrench, Plus, Clipboard, MoreVertical } from "lucide-react";
 import toast from "react-hot-toast";
 import api from "../services/api";
 import useAuthStore from "../store/useAuthStore";
@@ -39,7 +39,7 @@ export default function ServiceRequests() {
             if (response.data?.success) {
                 setRequests(response.data.serviceRequests || []);
             }
-        } catch (error) {
+        } catch {
             toast.error("Failed to load service tickets.");
         } finally {
             setLoading(false);
@@ -47,6 +47,7 @@ export default function ServiceRequests() {
     };
 
     useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         fetchRequests();
     }, []);
 

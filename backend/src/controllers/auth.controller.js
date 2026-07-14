@@ -129,11 +129,11 @@ async function logoutUser(req, res) {
         await logAction("USER_LOGOUT", userId, `User logged out`, req);
     }
 
-    const isProduction = process.env.NODE_ENV === "production";
     res.clearCookie("token", {
         httpOnly: true,
-        sameSite: isProduction ? "none" : "lax",
-        secure: isProduction,
+        sameSite: "lax",
+        secure: process.env.NODE_ENV === "production",
+        path: "/",
     });
 
     return res.status(200).json({ message: "Logout successful" });

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, Link as RouterLink } from "react-router-dom";
 import { Card, CardHeader, CardContent, CardFooter, Input, Button, Link } from "@heroui/react";
@@ -7,7 +7,7 @@ import toast from "react-hot-toast";
 import useAuthStore from "../store/useAuthStore";
 
 export default function Login() {
-    const { login, isLoading } = useAuthStore();
+    const { login, isLoggingIn } = useAuthStore();
     const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
 
@@ -107,7 +107,7 @@ export default function Login() {
                             type="submit"
                             color="primary"
                             className="mt-2 font-semibold shadow-md shadow-indigo-200"
-                            isLoading={isLoading}
+                            isLoading={isLoggingIn}
                         >
                             Sign In
                         </Button>

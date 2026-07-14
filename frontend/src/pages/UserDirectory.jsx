@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { 
     Table, TableHeader, TableColumn, TableBody, TableRow, TableCell,
     Button, Input, Select, ListBox, ListBoxItem, Label, Spinner, Modal, RadioGroup, Radio 
 } from "@heroui/react";
-import { Users, UserPlus, Trash2, Mail, Phone, Shield, Building, Key } from "lucide-react";
+import { Users, UserPlus, Trash2, Mail, Phone, Shield } from "lucide-react";
 import toast from "react-hot-toast";
 import api from "../services/api";
 import useAuthStore from "../store/useAuthStore";
@@ -44,7 +44,7 @@ export default function UserDirectory() {
             if (response.data?.success) {
                 setResidents(response.data.users || []);
             }
-        } catch (error) {
+        } catch {
             toast.error("Failed to load resident members directory.");
         }
     };
@@ -55,7 +55,7 @@ export default function UserDirectory() {
             if (response.data?.success) {
                 setCommittee(response.data.users || []);
             }
-        } catch (error) {
+        } catch {
             toast.error("Failed to load committee members list.");
         }
     };
@@ -71,7 +71,9 @@ export default function UserDirectory() {
     };
 
     useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         loadData();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentUser]);
 
     const handleDelete = async (id) => {

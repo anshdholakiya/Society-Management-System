@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { 
     Table, TableHeader, TableColumn, TableBody, TableRow, TableCell,
-    Button, Input, Select, ListBox, ListBoxItem, Label, Spinner, Modal, Card, CardContent
+    Button, Input, Select, ListBox, ListBoxItem, Label, Spinner, Modal
 } from "@heroui/react";
-import { Landmark, Plus, FileText, CheckCircle2, History, CreditCard, Receipt, Calendar } from "lucide-react";
+import { Landmark, CheckCircle2, History, Receipt } from "lucide-react";
 import toast from "react-hot-toast";
 import api from "../services/api";
 import useAuthStore from "../store/useAuthStore";
@@ -54,7 +54,7 @@ export default function Payments() {
             if (response.data?.success) {
                 setPayments(response.data.payments || []);
             }
-        } catch (error) {
+        } catch {
             toast.error("Failed to load payment transactions history.");
         }
     };
@@ -70,6 +70,7 @@ export default function Payments() {
 
     useEffect(() => {
         loadData();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentUser]);
 
     const handleRecordPaymentClick = (bill) => {
@@ -81,7 +82,6 @@ export default function Payments() {
     };
 
     const onSubmit = async (data) => {
-        // Validation logic matching Patch 2
         if (["online", "cheque"].includes(data.paymentMethod) && (!data.transactionId || !data.transactionId.trim())) {
             toast.error("Transaction Reference ID is strictly required for online/cheque methods.");
             return;

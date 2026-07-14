@@ -33,7 +33,7 @@ router.post(
     authController.loginUser
 );
 
-router.post("/logout", authenticate, authController.logoutUser);
+router.post("/logout", authController.logoutUser);
 router.get("/me", authenticate, authController.getMe);
 
 module.exports = router;

@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { Card, CardHeader, CardContent, Button, Input, Select, ListBox, ListBoxItem, Label, Spinner, Modal } from "@heroui/react";
-import { Megaphone, MessageSquare, Plus, Trash2, Calendar, ShieldCheck, User } from "lucide-react";
+import { Megaphone, MessageSquare, Plus, Trash2, Calendar, User } from "lucide-react";
 import toast from "react-hot-toast";
 import api from "../services/api";
 import useAuthStore from "../store/useAuthStore";
@@ -34,7 +34,7 @@ export default function Announcements() {
             if (response.data?.success) {
                 setAnnouncements(response.data.announcements || []);
             }
-        } catch (error) {
+        } catch {
             toast.error("Failed to load announcements feed.");
         } finally {
             setLoading(false);
@@ -42,6 +42,7 @@ export default function Announcements() {
     };
 
     useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         fetchAnnouncements();
     }, []);
 

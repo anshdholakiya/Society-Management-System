@@ -20,6 +20,9 @@ const errorHandler = require("./middlewares/errorHandler.middleware");
 
 const app = express();
 
+// Trust first proxy (required behind Render/Heroku reverse proxies for rate-limiting)
+app.set("trust proxy", 1);
+
 // 1. HTTP Security Headers
 app.use(helmet());
 

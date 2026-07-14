@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { 
     Table, TableHeader, TableColumn, TableBody, TableRow, TableCell,
-    Button, Input, Select, ListBox, ListBoxItem, Label, Spinner, Modal, Card, CardContent
+    Button, Input, Select, ListBox, ListBoxItem, Label, Spinner, Modal
 } from "@heroui/react";
-import { CreditCard, Plus, FileText, Trash2, Calendar, User, CheckCircle2, AlertTriangle } from "lucide-react";
+import { CreditCard, Plus, FileText, Trash2 } from "lucide-react";
 import toast from "react-hot-toast";
 import api from "../services/api";
 import useAuthStore from "../store/useAuthStore";
@@ -38,7 +38,7 @@ export default function Billing() {
             if (response.data?.success) {
                 setBills(response.data.bills || []);
             }
-        } catch (error) {
+        } catch {
             toast.error("Failed to fetch billing invoices.");
         }
     };
@@ -64,7 +64,9 @@ export default function Billing() {
     };
 
     useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         loadData();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentUser]);
 
     const handleDelete = async (id) => {

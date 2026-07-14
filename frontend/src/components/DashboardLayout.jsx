@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Link, NavLink, useNavigate, useLocation } from "react-router-dom";
+import { useState } from "react";
+import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@heroui/react";
 import { 
     Menu, X, LayoutDashboard, Users, Megaphone, 
@@ -83,7 +83,7 @@ export default function DashboardLayout({ children }) {
                     </div>
                     <div>
                         <span className="font-bold text-slate-800 text-sm tracking-tight block">Society Manager</span>
-                        <span className="text-[10px] text-slate-500 font-semibold uppercase tracking-wider block">Admin Panel</span>
+                        <span className="text-[10px] text-slate-500 font-semibold uppercase tracking-wider block">{user?.role === "admin" ? "Admin Panel" : user?.role === "committee_member" ? "Committee Panel" : "Resident Panel"}</span>
                     </div>
                 </div>
 

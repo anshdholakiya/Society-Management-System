@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { 
     Table, TableHeader, TableColumn, TableBody, TableRow, TableCell,
-    Button, Input, Select, ListBox, ListBoxItem, Label, Spinner, Modal,
-    Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Card, CardContent
+    Button, Input, Select, ListBox, ListBoxItem, Label, Spinner, Modal
 } from "@heroui/react";
-import { ShieldAlert, Plus, MessageSquare, CheckCircle, Upload, Calendar, User, Eye, UserCheck } from "lucide-react";
+import { ShieldAlert, Plus, MessageSquare, Upload, Eye, UserCheck, Trash2 } from "lucide-react";
 import toast from "react-hot-toast";
 import api from "../services/api";
 import useAuthStore from "../store/useAuthStore";
@@ -29,7 +28,6 @@ export default function Complaints() {
     } = useForm();
 
     const {
-        register: registerAssign,
         handleSubmit: handleSubmitAssign,
         control: controlAssign,
         reset: resetAssign,
@@ -49,7 +47,7 @@ export default function Complaints() {
             if (response.data?.success) {
                 setComplaints(response.data.complaints || []);
             }
-        } catch (error) {
+        } catch {
             toast.error("Failed to load complaints registry.");
         }
     };
@@ -75,7 +73,9 @@ export default function Complaints() {
     };
 
     useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         loadData();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentUser]);
 
     const handleRaiseComplaint = async (data) => {
