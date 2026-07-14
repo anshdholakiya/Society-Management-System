@@ -34,7 +34,18 @@ if (process.env.CLIENT_URL) {
 
 app.use(
     cors({
-        origin: allowedOrigins,
+        origin: function (origin, callback) {
+            if (!origin) return callback(null, true);
+            const isAllowed = allowedOrigins.includes(origin) || 
+                              origin.endsWith("anshdholakiya.me") || 
+                              origin.includes("vercel.app") ||
+                              (process.env.CLIENT_URL && origin.startsWith(process.env.CLIENT_URL));
+            if (isAllowed) {
+                callback(null, true);
+            } else {
+                callback(new Error("Blocked by CORS"));
+            }
+        },
         credentials: true,
     })
 );
