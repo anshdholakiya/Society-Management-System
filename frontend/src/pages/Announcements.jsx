@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
-import { Card, CardHeader, CardContent, Button, Input, Select, ListBox, Label, Spinner, Modal } from "@heroui/react";
+import { Card, CardHeader, CardContent, Button, Input, Select, ListBox, ListBoxItem, Label, Spinner, Modal } from "@heroui/react";
 import { Megaphone, MessageSquare, Plus, Trash2, Calendar, ShieldCheck, User } from "lucide-react";
 import toast from "react-hot-toast";
 import api from "../services/api";
@@ -238,9 +238,9 @@ export default function Announcements() {
                                                             </Select.Trigger>
                                                             <Select.Popover>
                                                                 <ListBox>
-                                                                    <ListBox.Item id="all">All Members</ListBox.Item>
-                                                                    <ListBox.Item id="residents">Residents Only</ListBox.Item>
-                                                                    <ListBox.Item id="committee">Committee Members Only</ListBox.Item>
+                                                                    <ListBoxItem id="all">All Members</ListBoxItem>
+                                                                    <ListBoxItem id="residents">Residents Only</ListBoxItem>
+                                                                    <ListBoxItem id="committee">Committee Members Only</ListBoxItem>
                                                                 </ListBox>
                                                             </Select.Popover>
                                                         </Select>

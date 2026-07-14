@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { 
     Table, TableHeader, TableColumn, TableBody, TableRow, TableCell,
-    Button, Input, Select, ListBox, Label, Spinner, Modal,
+    Button, Input, Select, ListBox, ListBoxItem, Label, Spinner, Modal,
     Dropdown, DropdownTrigger, DropdownMenu, DropdownItem
 } from "@heroui/react";
 import { Wrench, Plus, Clipboard, CheckCircle2, AlertCircle, Calendar, User, MoreVertical } from "lucide-react";
@@ -272,11 +272,11 @@ export default function ServiceRequests() {
                                                                 </Select.Trigger>
                                                                 <Select.Popover>
                                                                     <ListBox>
-                                                                        <ListBox.Item id="plumbing">Plumbing</ListBox.Item>
-                                                                        <ListBox.Item id="electrical">Electrical</ListBox.Item>
-                                                                        <ListBox.Item id="carpentry">Carpentry</ListBox.Item>
-                                                                        <ListBox.Item id="cleaning">Cleaning</ListBox.Item>
-                                                                        <ListBox.Item id="other">Other</ListBox.Item>
+                                                                        <ListBoxItem id="plumbing">Plumbing</ListBoxItem>
+                                                                        <ListBoxItem id="electrical">Electrical</ListBoxItem>
+                                                                        <ListBoxItem id="carpentry">Carpentry</ListBoxItem>
+                                                                        <ListBoxItem id="cleaning">Cleaning</ListBoxItem>
+                                                                        <ListBoxItem id="other">Other</ListBoxItem>
                                                                     </ListBox>
                                                                 </Select.Popover>
                                                             </Select>
@@ -311,9 +311,9 @@ export default function ServiceRequests() {
                                                                 </Select.Trigger>
                                                                 <Select.Popover>
                                                                     <ListBox>
-                                                                        <ListBox.Item id="low">Low</ListBox.Item>
-                                                                        <ListBox.Item id="medium">Medium</ListBox.Item>
-                                                                        <ListBox.Item id="high">High</ListBox.Item>
+                                                                        <ListBoxItem id="low">Low</ListBoxItem>
+                                                                        <ListBoxItem id="medium">Medium</ListBoxItem>
+                                                                        <ListBoxItem id="high">High</ListBoxItem>
                                                                     </ListBox>
                                                                 </Select.Popover>
                                                             </Select>

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { 
     Table, TableHeader, TableColumn, TableBody, TableRow, TableCell,
-    Button, Input, Select, ListBox, Label, Spinner, Modal, RadioGroup, Radio 
+    Button, Input, Select, ListBox, ListBoxItem, Label, Spinner, Modal, RadioGroup, Radio 
 } from "@heroui/react";
 import { Users, UserPlus, Trash2, Mail, Phone, Shield, Building, Key } from "lucide-react";
 import toast from "react-hot-toast";
@@ -417,8 +417,8 @@ export default function UserDirectory() {
                                                                     </Select.Trigger>
                                                                     <Select.Popover>
                                                                         <ListBox>
-                                                                            <ListBox.Item id="owner">Owner</ListBox.Item>
-                                                                            <ListBox.Item id="tenant">Tenant</ListBox.Item>
+                                                                            <ListBoxItem id="owner">Owner</ListBoxItem>
+                                                                            <ListBoxItem id="tenant">Tenant</ListBoxItem>
                                                                         </ListBox>
                                                                     </Select.Popover>
                                                                 </Select>

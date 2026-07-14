@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { 
     Table, TableHeader, TableColumn, TableBody, TableRow, TableCell,
-    Button, Input, Select, ListBox, Label, Spinner, Modal, Card, CardContent
+    Button, Input, Select, ListBox, ListBoxItem, Label, Spinner, Modal, Card, CardContent
 } from "@heroui/react";
 import { Landmark, Plus, FileText, CheckCircle2, History, CreditCard, Receipt, Calendar } from "lucide-react";
 import toast from "react-hot-toast";
@@ -301,9 +301,9 @@ export default function Payments() {
                                                             </Select.Trigger>
                                                             <Select.Popover>
                                                                 <ListBox>
-                                                                    <ListBox.Item id="cash">Cash</ListBox.Item>
-                                                                    <ListBox.Item id="cheque">Cheque</ListBox.Item>
-                                                                    <ListBox.Item id="online">Online / UPI</ListBox.Item>
+                                                                    <ListBoxItem id="cash">Cash</ListBoxItem>
+                                                                    <ListBoxItem id="cheque">Cheque</ListBoxItem>
+                                                                    <ListBoxItem id="online">Online / UPI</ListBoxItem>
                                                                 </ListBox>
                                                             </Select.Popover>
                                                         </Select>

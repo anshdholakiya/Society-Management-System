@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { 
     Table, TableHeader, TableColumn, TableBody, TableRow, TableCell,
-    Button, Input, Select, ListBox, Label, Spinner, Modal,
+    Button, Input, Select, ListBox, ListBoxItem, Label, Spinner, Modal,
     Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Card, CardContent
 } from "@heroui/react";
 import { ShieldAlert, Plus, MessageSquare, CheckCircle, Upload, Calendar, User, Eye, UserCheck } from "lucide-react";
@@ -430,9 +430,9 @@ export default function Complaints() {
                                                             <Select.Popover>
                                                                 <ListBox>
                                                                     {committee.map((c) => (
-                                                                        <ListBox.Item key={c._id} id={c._id}>
+                                                                        <ListBoxItem key={c._id} id={c._id}>
                                                                             {c.fullName} ({c.designation})
-                                                                        </ListBox.Item>
+                                                                        </ListBoxItem>
                                                                     ))}
                                                                 </ListBox>
                                                             </Select.Popover>

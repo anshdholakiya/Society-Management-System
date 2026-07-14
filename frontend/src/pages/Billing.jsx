@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { 
     Table, TableHeader, TableColumn, TableBody, TableRow, TableCell,
-    Button, Input, Select, ListBox, Label, Spinner, Modal, Card, CardContent
+    Button, Input, Select, ListBox, ListBoxItem, Label, Spinner, Modal, Card, CardContent
 } from "@heroui/react";
 import { CreditCard, Plus, FileText, Trash2, Calendar, User, CheckCircle2, AlertTriangle } from "lucide-react";
 import toast from "react-hot-toast";
@@ -245,9 +245,9 @@ export default function Billing() {
                                                             <Select.Popover>
                                                                 <ListBox>
                                                                     {residents.map((r) => (
-                                                                        <ListBox.Item key={r._id} id={r._id}>
+                                                                        <ListBoxItem key={r._id} id={r._id}>
                                                                             {r.fullName} ({r.block}-{r.unitNumber})
-                                                                        </ListBox.Item>
+                                                                        </ListBoxItem>
                                                                     ))}
                                                                 </ListBox>
                                                             </Select.Popover>

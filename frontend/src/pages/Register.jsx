@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { useNavigate, Link as RouterLink } from "react-router-dom";
-import { Card, CardHeader, CardContent, CardFooter, Input, Button, Link, Select, ListBox, Label } from "@heroui/react";
+import { Card, CardHeader, CardContent, CardFooter, Input, Button, Link, Select, ListBox, ListBoxItem, Label } from "@heroui/react";
 import { User, Mail, Lock, Phone, Hash, Eye, EyeOff, Building } from "lucide-react";
 import toast from "react-hot-toast";
 import useAuthStore from "../store/useAuthStore";
@@ -180,8 +180,8 @@ export default function Register() {
                                             </Select.Trigger>
                                             <Select.Popover>
                                                 <ListBox>
-                                                    <ListBox.Item id="owner">Owner</ListBox.Item>
-                                                    <ListBox.Item id="tenant">Tenant</ListBox.Item>
+                                                    <ListBoxItem id="owner">Owner</ListBoxItem>
+                                                    <ListBoxItem id="tenant">Tenant</ListBoxItem>
                                                 </ListBox>
                                             </Select.Popover>
                                         </Select>
