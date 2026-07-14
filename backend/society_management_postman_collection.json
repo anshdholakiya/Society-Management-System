@@ -1,0 +1,845 @@
+{
+	"info": {
+		"_postman_id": "d5f661cc-9d41-477d-bb62-42fe123e410b",
+		"name": "Society Management System API",
+		"description": "Complete, production-grade API Collection for the Society Management System backend. Designed with folders, custom request configurations, variables, headers, and exhaustive dummy payloads for all 25 operational endpoints.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Register User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"fullName\": \"Jane Resident\",\n  \"email\": \"jane.resident@example.com\",\n  \"password\": \"resident123\",\n  \"phone\": \"9876543211\",\n  \"unitNumber\": \"102\",\n  \"block\": \"C\",\n  \"ownershipStatus\": \"owner\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/register",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"register"
+							]
+						},
+						"description": "Public user registration endpoint. The role parameter is ignored here and hardcoded to 'resident' for security."
+					},
+					"response": []
+				},
+				{
+					"name": "Login User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"jane.resident@example.com\",\n  \"password\": \"resident123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						},
+						"description": "Authenticates the user and sets an HttpOnly cookie containing the JWT session token."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Profile Info (/me)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/auth/me",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"me"
+							]
+						},
+						"description": "Returns current logged in user details based on the cookie session."
+					},
+					"response": []
+				},
+				{
+					"name": "Logout User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/auth/logout",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"logout"
+							]
+						},
+						"description": "Clears the authentication token cookie from the client."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User Administration",
+			"item": [
+				{
+					"name": "Admin Creates Resident",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"fullName\": \"Rahul Sharma\",\n  \"email\": \"rahul.sharma@example.com\",\n  \"password\": \"rahul123\",\n  \"unitNumber\": \"304\",\n  \"block\": \"B\",\n  \"ownershipStatus\": \"tenant\",\n  \"phone\": \"9123456789\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/users/residents",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"residents"
+							]
+						},
+						"description": "Admin only endpoint to register verified residents into flat units."
+					},
+					"response": []
+				},
+				{
+					"name": "Admin Creates Committee Member",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"fullName\": \"Steve Rogers\",\n  \"email\": \"steve.secretary@example.com\",\n  \"password\": \"steve123\",\n  \"designation\": \"Secretary\",\n  \"phone\": \"9876543219\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/users/committee",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"committee"
+							]
+						},
+						"description": "Admin only endpoint to register committee designees."
+					},
+					"response": []
+				},
+				{
+					"name": "List Residents",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/users/residents?search=&block=&ownershipStatus=&isActive=true&page=1&limit=10",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"residents"
+							],
+							"query": [
+								{
+									"key": "search",
+									"value": ""
+								},
+								{
+									"key": "block",
+									"value": ""
+								},
+								{
+									"key": "ownershipStatus",
+									"value": ""
+								},
+								{
+									"key": "isActive",
+									"value": "true"
+								},
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						},
+						"description": "Allows Admin & Committee members to browse society residents with advanced search filters."
+					},
+					"response": []
+				},
+				{
+					"name": "List Committee Members",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/users/committee",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"committee"
+							]
+						},
+						"description": "Returns details of the active committee members (accessible by all roles)."
+					},
+					"response": []
+				},
+				{
+					"name": "Update User Detail",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"fullName\": \"Rahul S. Sharma\",\n  \"phone\": \"9999988888\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/users/USER_ID_HERE",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"USER_ID_HERE"
+							]
+						},
+						"description": "Allows Admin or users to modify their personal contact details."
+					},
+					"response": []
+				},
+				{
+					"name": "Delete User (Soft Delete)",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/users/USER_ID_HERE",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"USER_ID_HERE"
+							]
+						},
+						"description": "Admin only soft delete function. Flags isDeleted to hide user details without breaking billing records."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Announcements",
+			"item": [
+				{
+					"name": "Publish Announcement",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"Water Shutdown Notice\",\n  \"content\": \"Water supply will be suspended this Thursday from 10:00 AM to 2:00 PM due to clean-up of overhead tanks.\",\n  \"targetAudience\": \"residents\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/announcements",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"announcements"
+							]
+						},
+						"description": "Allows Admin & Committee to broadcast notices. Audience scoping applies."
+					},
+					"response": []
+				},
+				{
+					"name": "List Announcements",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/announcements?page=1&limit=10",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"announcements"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						},
+						"description": "Lists announcements. Scope constraints filter committee items out for residents."
+					},
+					"response": []
+				},
+				{
+					"name": "Update Announcement",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"Updated: Water Shutdown Notice\",\n  \"content\": \"Water supply will be suspended this Thursday from 11:00 AM to 1:00 PM instead.\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/announcements/ANNOUNCEMENT_ID_HERE",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"announcements",
+								"ANNOUNCEMENT_ID_HERE"
+							]
+						},
+						"description": "Allows Admin or the original publisher (Committee Member) to update the announcement details."
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Announcement",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/announcements/ANNOUNCEMENT_ID_HERE",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"announcements",
+								"ANNOUNCEMENT_ID_HERE"
+							]
+						},
+						"description": "Allows Admin or the original publisher (Committee Member) to delete an announcement notice."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Complaints",
+			"item": [
+				{
+					"name": "Raise Complaint (Text Form)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"Broken pipe in garden area\",\n  \"description\": \"The sprinkler pipeline near block C has burst and is wasting water.\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/complaints",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"complaints"
+							]
+						},
+						"description": "Resident raises complaint. Image buffers parse in ImageKit."
+					},
+					"response": []
+				},
+				{
+					"name": "List Complaints",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/complaints",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"complaints"
+							]
+						},
+						"description": "Residents only see their own complaints; Admin & Committee members view all logs."
+					},
+					"response": []
+				},
+				{
+					"name": "Assign Complaint",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"assignedTo\": \"COMMITTEE_MEMBER_ID_HERE\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/complaints/COMPLAINT_ID_HERE/assign",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"complaints",
+								"COMPLAINT_ID_HERE",
+								"assign"
+							]
+						},
+						"description": "Admin allocates a complaint to a specific committee member."
+					},
+					"response": []
+				},
+				{
+					"name": "Update Status & Add Comment",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"status\": \"resolved\",\n  \"comment\": \"A plumber has replaced the damaged sprinkler valve. Sprinkler is working.\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/complaints/COMPLAINT_ID_HERE",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"complaints",
+								"COMPLAINT_ID_HERE"
+							]
+						},
+						"description": "Allows Admin & Committee to resolve and write comment logs on the task status."
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Complaint",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/complaints/COMPLAINT_ID_HERE",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"complaints",
+								"COMPLAINT_ID_HERE"
+							]
+						},
+						"description": "Soft delete complaint. ImageKit images are preserved for audit purposes."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Service Requests",
+			"item": [
+				{
+					"name": "Submit Request",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"Kitchen faucet leaking\",\n  \"description\": \"The hot water faucet in the kitchen sink is dripping continuously.\",\n  \"category\": \"plumbing\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/service-requests",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"service-requests"
+							]
+						},
+						"description": "Resident raises standard repair requests."
+					},
+					"response": []
+				},
+				{
+					"name": "List Service Requests",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/service-requests",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"service-requests"
+							]
+						},
+						"description": "Residents query their own requests, Admins/Committee retrieve all."
+					},
+					"response": []
+				},
+				{
+					"name": "Update Request Status",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"status\": \"in_progress\",\n  \"assignedTo\": \"COMMITTEE_MEMBER_ID_HERE\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/service-requests/REQUEST_ID_HERE",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"service-requests",
+								"REQUEST_ID_HERE"
+							]
+						},
+						"description": "Admin or committee marks requests from pending to assigned or finished."
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Service Request",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/service-requests/REQUEST_ID_HERE",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"service-requests",
+								"REQUEST_ID_HERE"
+							]
+						},
+						"description": "Soft deletes a service request (accessible by Admin or the Resident creator)."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Billing & Payments",
+			"item": [
+				{
+					"name": "Generate Bill",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"resident\": \"RESIDENT_USER_ID_HERE\",\n  \"amount\": 2500,\n  \"dueDate\": \"2026-08-10T12:00:00.000Z\",\n  \"billingPeriod\": \"August 2026\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/bills",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"bills"
+							]
+						},
+						"description": "Admin only bill generator."
+					},
+					"response": []
+				},
+				{
+					"name": "List Bills",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/bills?status=unpaid",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"bills"
+							],
+							"query": [
+								{
+									"key": "status",
+									"value": "unpaid"
+								}
+							]
+						},
+						"description": "Fetches society maintenance invoices. Filterable by resident and payment state."
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Bill",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/bills/BILL_ID_HERE",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"bills",
+								"BILL_ID_HERE"
+							]
+						},
+						"description": "Admin only soft delete of a generated maintenance invoice."
+					},
+					"response": []
+				},
+				{
+					"name": "Record Payment",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"bill\": \"BILL_ID_HERE\",\n  \"amountPaid\": 2500,\n  \"paymentMethod\": \"online\",\n  \"transactionId\": \"TXN_AUG_489234\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/payments",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"payments"
+							]
+						},
+						"description": "Admin records payment. TransactionId is strictly validated for 'online' and 'cheque' methods. Processed inside atomic ACID transactions."
+					},
+					"response": []
+				},
+				{
+					"name": "List Payments",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/payments",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"payments"
+							]
+						},
+						"description": "Returns payment histories (Residents view their own; Admins list all)."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Dashboards",
+			"item": [
+				{
+					"name": "Admin Dashboard",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/dashboards/admin",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"dashboards",
+								"admin"
+							]
+						},
+						"description": "Admin only dashboard analytics containing user counts, complaint spreads, finance states, and audit trails."
+					},
+					"response": []
+				},
+				{
+					"name": "Resident Dashboard",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/dashboards/resident",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"dashboards",
+								"resident"
+							]
+						},
+						"description": "Resident analytics containing outstanding bills, total due amount, active complaints, and transactions."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Audit Logs",
+			"item": [
+				{
+					"name": "Get Audit Logs",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/audit-logs?page=1&limit=20",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"audit-logs"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "20"
+								}
+							]
+						},
+						"description": "Admin only access to system-wide audit logs."
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:3000",
+			"type": "string"
+		}
+	]
+}
