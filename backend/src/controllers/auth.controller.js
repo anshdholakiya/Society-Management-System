@@ -15,19 +15,18 @@ function buildToken(user) {
 }
 
 function setAuthCookie(res, token) {
-    const isProduction = process.env.NODE_ENV === "production";
     res.cookie("token", token, {
         httpOnly: true,
-        sameSite: isProduction ? "none" : "lax",
-        secure: isProduction,
+        sameSite: "lax",
+        secure: process.env.NODE_ENV === "production",
     });
 }
 
 async function registerUser(req, res) {
-    const { 
-        fullName, 
-        email, 
-        password, 
+    const {
+        fullName,
+        email,
+        password,
         phone = "",
         unitNumber = "",
         block = "",
@@ -130,10 +129,11 @@ async function logoutUser(req, res) {
         await logAction("USER_LOGOUT", userId, `User logged out`, req);
     }
 
+    const isProduction = process.env.NODE_ENV === "production";
     res.clearCookie("token", {
         httpOnly: true,
-        sameSite: "lax",
-        secure: process.env.NODE_ENV === "production",
+        sameSite: isProduction ? "none" : "lax",
+        secure: isProduction,
     });
 
     return res.status(200).json({ message: "Logout successful" });
