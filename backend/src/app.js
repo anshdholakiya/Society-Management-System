@@ -27,15 +27,28 @@ app.set("trust proxy", 1);
 app.use(helmet());
 
 // 2. CORS setup with credentials (allows frontends to transmit HttpOnly session cookies)
-const allowedOrigins = ["http://localhost:5173", "http://localhost:5174", "http://localhost:5175"];
+const allowedOrigins = [
+    "http://localhost:5173",
+    "http://localhost:5174",
+    "http://localhost:5175",
+    "https://society.anshdholakiya.me"
+];
+
 if (process.env.CLIENT_URL) {
-    allowedOrigins.push(process.env.CLIENT_URL);
+    const envOrigins = process.env.CLIENT_URL.split(",").map(url => url.trim());
+    allowedOrigins.push(...envOrigins);
 }
 
 app.use(
     cors({
         origin: function (origin, callback) {
-            callback(null, true);
+            if (!origin) return callback(null, true);
+            const isAllowed = allowedOrigins.includes(origin) || origin.endsWith(".vercel.app");
+            if (isAllowed) {
+                callback(null, true);
+            } else {
+                callback(new Error(`Origin ${origin} not allowed by CORS`));
+            }
         },
         credentials: true,
     })
