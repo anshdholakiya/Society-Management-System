@@ -24,63 +24,9 @@ function setAuthCookie(res, token) {
 }
 
 async function registerUser(req, res) {
-    const {
-        fullName,
-        email,
-        password,
-        phone = "",
-        unitNumber = "",
-        block = "",
-        ownershipStatus = "",
-        designation = ""
-    } = req.body;
-
-    const role = "resident"; // Strictly hardcode role to resident to prevent privilege escalation
-
-    if (!fullName || !email || !password) {
-        return res.status(400).json({ message: "fullName, email, and password are required" });
-    }
-
-    const existingUser = await userModel.findOne({ email: email.toLowerCase() });
-
-    if (existingUser) {
-        return res.status(409).json({ message: "User already exists" });
-    }
-
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    const user = await userModel.create({
-        fullName,
-        email,
-        password: hashedPassword,
-        role,
-        phone,
-        unitNumber,
-        block,
-        ownershipStatus,
-        designation,
-    });
-
-    const token = buildToken(user);
-    setAuthCookie(res, token);
-
-    // Audit Log
-    await logAction("USER_REGISTER", user._id, `User registered: ${user.email} as ${user.role}`, req);
-
-    return res.status(201).json({
-        message: "User registered successfully",
-        user: {
-            id: user._id,
-            fullName: user.fullName,
-            email: user.email,
-            role: user.role,
-            phone: user.phone,
-            unitNumber: user.unitNumber,
-            block: user.block,
-            ownershipStatus: user.ownershipStatus,
-            designation: user.designation,
-            isActive: user.isActive,
-        },
+    return res.status(403).json({
+        success: false,
+        message: "Self-registration is disabled. Please contact the society administrator to register."
     });
 }
 

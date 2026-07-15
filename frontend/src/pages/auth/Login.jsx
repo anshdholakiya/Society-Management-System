@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import Button from "../../components/ui/Button";
 import Input from "../../components/ui/Input";
@@ -114,12 +114,12 @@ export default function Login() {
           </div>
         </form>
 
-        {/* Footer Navigation */}
+        {/* Footer Notice */}
         <div className="border-t border-primary/10 pt-4 mt-6 text-center font-sans text-xs">
-          <span className="text-text/70">No registered flat? </span>
-          <Link to="/register" className="text-accent underline font-semibold hover:text-accent/80">
-            Register here
-          </Link>
+          <span className="text-text/75">No registered flat? </span>
+          <span className="text-text/60 font-semibold block mt-1">
+            Contact the society administrator to register.
+          </span>
         </div>
       </Card>
     </div>

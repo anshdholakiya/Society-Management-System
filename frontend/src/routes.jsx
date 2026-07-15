@@ -4,7 +4,6 @@ import { useAuth } from "./context/AuthContext";
 
 // Pages
 import Login from "./pages/auth/Login";
-import Register from "./pages/auth/Register";
 import Unauthorized from "./pages/auth/Unauthorized";
 import AdminDashboard from "./pages/dashboards/AdminDashboard";
 import CommitteeDashboard from "./pages/dashboards/CommitteeDashboard";
@@ -50,12 +49,6 @@ export default function AppRoutes() {
         path="/login"
         element={
           user ? <Navigate to={getDashboardPath(user.role)} replace /> : <Login />
-        }
-      />
-      <Route
-        path="/register"
-        element={
-          user ? <Navigate to={getDashboardPath(user.role)} replace /> : <Register />
         }
       />
       <Route path="/unauthorized" element={<Unauthorized />} />

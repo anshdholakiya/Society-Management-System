@@ -17,6 +17,19 @@ beforeAll(async () => {
     if (mongoose.connection.readyState === 0) {
         await mongoose.connect(process.env.MONGO_URI);
     }
+    // Seed test resident user directly in the DB
+    const bcrypt = require("bcryptjs");
+    const hashedPassword = await bcrypt.hash("password123", 10);
+    const user = await userModel.create({
+        fullName: "Test User",
+        email: testEmail,
+        password: hashedPassword,
+        role: "resident",
+        unitNumber: "99",
+        block: "T",
+        ownershipStatus: "owner"
+    });
+    testUserId = user._id.toString();
 });
 
 afterAll(async () => {
@@ -26,23 +39,21 @@ afterAll(async () => {
 });
 
 describe("🔒 Authentication API Integration Tests", () => {
-    it("should register a new user as resident and ignore role escalation (Patch 1)", async () => {
+    it("should reject public self-registration with a 403 response", async () => {
         const res = await request(app)
             .post("/api/auth/register")
             .send({
-                fullName: "Test User",
-                email: testEmail,
+                fullName: "Other Test User",
+                email: `tester_other_${rand}@society.com`,
                 password: "password123",
-                role: "admin", // Privilege escalation attempt
-                unitNumber: "99",
+                unitNumber: "100",
                 block: "T",
                 ownershipStatus: "owner"
             });
 
-        expect(res.statusCode).toBe(201);
-        expect(res.body.user).toBeDefined();
-        expect(res.body.user.role).toBe("resident"); // Must be hardcoded to resident
-        testUserId = res.body.user.id;
+        expect(res.statusCode).toBe(403);
+        expect(res.body.success).toBe(false);
+        expect(res.body.message).toContain("Self-registration is disabled");
     });
 
     it("should login user and return a cookie", async () => {
