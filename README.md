@@ -71,82 +71,19 @@ Society-Management-System/
 
 ---
 
-## 📊 Database Schema Design
+## 💾 Database Setup
 
-The application utilizes a fully normalized MongoDB schema designed with clean relations and constraints:
+Since the application uses **MongoDB** (a NoSQL document database), data is stored as flexible JSON-like documents inside collections rather than rigid tables. The database models are defined and validated at the application level using **Mongoose ODM**.
 
-```mermaid
-erDiagram
-    USER {
-        ObjectId id PK
-        string fullName
-        string email
-        string password
-        string role
-        string phone
-        string unitNumber
-        string block
-        string ownershipStatus
-        string designation
-        boolean isActive
-        boolean isDeleted
-    }
-    BILL {
-        ObjectId id PK
-        ObjectId resident FK
-        number amount
-        date dueDate
-        string billingPeriod
-        string status
-        boolean isDeleted
-    }
-    PAYMENT {
-        ObjectId id PK
-        ObjectId bill FK
-        ObjectId resident FK
-        number amountPaid
-        string paymentMethod
-        string transactionId
-        ObjectId recordedBy FK
-    }
-    COMPLAINT {
-        ObjectId id PK
-        string title
-        string description
-        string imageUrl
-        string imageKitFileId
-        string status
-        ObjectId raisedBy FK
-        ObjectId assignedTo FK
-        boolean isDeleted
-    }
-    SERVICE_REQUEST {
-        ObjectId id PK
-        string title
-        string description
-        string category
-        string status
-        ObjectId raisedBy FK
-        ObjectId assignedTo FK
-        boolean isDeleted
-    }
-    AUDIT_LOG {
-        ObjectId id PK
-        string action
-        ObjectId performedBy FK
-        string details
-        string ipAddress
-    }
-
-    USER ||--o{ BILL : "receives"
-    USER ||--o{ PAYMENT : "pays"
-    USER ||--o{ COMPLAINT : "raises"
-    USER ||--o{ COMPLAINT : "is assigned to"
-    USER ||--o{ SERVICE_REQUEST : "submits"
-    USER ||--o{ SERVICE_REQUEST : "is assigned to"
-    USER ||--o{ AUDIT_LOG : "triggers"
-    
-    BILL ||--o{ PAYMENT : "settled by"
+### Setup Instructions:
+1. **Local MongoDB**: Ensure MongoDB Community Server is installed and running on your system (usually at `mongodb://localhost:27017`).
+2. **Cloud MongoDB (Atlas)**: Alternatively, create a free database cluster on [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) and retrieve your connection string URI.
+3. **Connection URI**: Add your connection string to the `MONGO_URI` variable in `backend/.env`.
+4. **Initial Data Seeding**: Run the seed script in the backend directory to establish the first System Administrator profile:
+   ```bash
+   cd backend
+   npm run seed
+   ```
 ```
 
 ---
@@ -840,3 +777,44 @@ All routes require requests to send and receive JSON data. Authentication tokens
 2.  **Payment Reference Integrity**: Manual bank transfers (`"online"`) and cheque payment methods strictly validate the presence of a reference string (`transactionId`) before payment records are logged.
 3.  **ACID Transactions**: Using Mongoose session transactions, recording payments and updating bill statuses to `"paid"` are performed atomically. Any single-operation failure triggers a database rollback.
 4.  **Auto-Filter Soft-Deletes**: Added query middleware hooks to all Mongoose schemas to automatically filter out soft-deleted (`isDeleted: true`) records on all `find` operations while retaining image URLs for financial audits.
+
+---
+
+## 📸 Screenshots
+
+Here are key pages from the Society Management System:
+
+### 🔐 Authentication & Intake
+*   **Society Sign-in**: Standard credentials entry panel.
+    ![Society Sign-in](screenshots/login.png)
+ 
+*   **Resident Intake Form**: Flat registry intake sheet.
+    ![Resident Intake](screenshots/resident_intake.png)
+
+### 📊 Dashboards & Registry Panels
+*   **Resident Dashboard (Profile & Notices)**: Notice board, apartment flat details, and quick indicators.
+    ![Resident Dashboard](screenshots/resident_dashboard.png)
+
+*   **Resident Dashboard (Ledger Overview)**: Quick access cards for unresolved invoices, outstanding dues, recent payments, and active grievances.
+    ![Resident Dashboard Ledger](screenshots/resident_dashboard_finance.png)
+
+*   **Executive Admin Console**: System administrator dashboard with fund charts, headcount cards, open ticket summaries, and live system audit logs.
+    ![Admin Dashboard](screenshots/admin_dashboard.png)
+
+*   **Residents Registry**: Management panel to search, create, suspend/activate, or delete resident profiles.
+    ![Residents Registry](screenshots/residents_registry.png)
+
+*   **Committee Registry**: Designation management desk for board representatives.
+    ![Committee Registry](screenshots/committee_registry.png)
+
+*   **Grievances Registry**: Board for assigning resident complaints to committee representatives.
+    ![Grievances Registry](screenshots/grievances_registry.png)
+
+*   **Ledger Dues & Billing**: Invoice management screen to generate bulk bills and search past billing balances.
+    ![Ledger Dues & Billing](screenshots/billing_invoices.png)
+
+*   **Announcement Details Dossier**: Modal popup displaying notice details and file attachments (e.g. event flyers).
+    ![Announcement Details](screenshots/announcement_details.png)
+
+*   **System Audit Trail Logs**: Admin console tracing security actions, logins, registrations, and monetary mutations in real-time.
+    ![System Audit Logs](screenshots/audit_logs.png)
