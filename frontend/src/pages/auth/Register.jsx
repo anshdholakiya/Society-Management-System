@@ -60,9 +60,9 @@ export default function Register() {
 
         {/* Form Title */}
         <div className="border-b border-primary/15 pb-4 mb-6 text-center">
-          <h2 className="text-3xl font-display font-bold text-primary">Resident Intake</h2>
+          <h2 className="text-3xl font-display font-bold text-primary">Resident Registration</h2>
           <p className="font-sans text-xs text-text/60 mt-1 uppercase tracking-wider font-semibold">
-            Apply for Flat Ledger Registry Account
+            Create your Resident Account
           </p>
         </div>
 
@@ -100,7 +100,7 @@ export default function Register() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Input
-              label="Private Passkey"
+              label="Password"
               type="password"
               placeholder="Min 6 characters"
               error={errors.password}
@@ -175,10 +175,10 @@ export default function Register() {
               {isSubmitting ? (
                 <>
                   <Spinner size="sm" className="border-surface" />
-                  <span>Submitting Intake Registration...</span>
+                  <span>Registering Account...</span>
                 </>
               ) : (
-                <span>Submit Intake Sheet</span>
+                <span>Register</span>
               )}
             </Button>
           </div>

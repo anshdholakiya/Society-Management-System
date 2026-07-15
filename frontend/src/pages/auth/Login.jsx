@@ -31,7 +31,7 @@ export default function Login() {
     try {
       const user = await login(data.email, data.password);
       toast.success(`Welcome back, ${user.fullName}!`, { id: toastId });
-      
+
       // Role-aware redirections
       if (user.role === "admin") {
         navigate("/admin/dashboard");
@@ -51,7 +51,7 @@ export default function Login() {
   return (
     <div className="min-h-[80vh] flex flex-col items-center justify-center p-4">
       <Card className="w-full max-w-md border-primary/20 relative p-8">
-        
+
         {/* Decorative corner pin */}
         <div className="absolute top-0 right-0 w-8 h-8 flex items-center justify-center">
           <div className="w-2.5 h-2.5 bg-accent rounded-full border border-primary/10 shadow-sm" />
@@ -59,23 +59,23 @@ export default function Login() {
 
         {/* Form Title */}
         <div className="border-b border-primary/15 pb-4 mb-6 text-center">
-          <h2 className="text-3xl font-display font-bold text-primary">Office Sign-in</h2>
+          <h2 className="text-3xl font-display font-bold text-primary">Society Sign-in</h2>
           <p className="font-sans text-xs text-text/60 mt-1 uppercase tracking-wider font-semibold">
-            Society Management Ledger Registry
+            Admin & Resident Portal
           </p>
         </div>
 
         {/* Form body */}
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
           <Input
-            label="Email Registry Address"
+            label="Email Address"
             type="email"
             placeholder="e.g. rahul.sharma@example.com"
             error={errors.email}
             disabled={isSubmitting}
             required
             {...register("email", {
-              required: "Email is required to verify identity",
+              required: "Email is required to sign in",
               pattern: {
                 value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
                 message: "Please enter a valid email address",
@@ -84,14 +84,14 @@ export default function Login() {
           />
 
           <Input
-            label="Private Passkey"
+            label="Password"
             type="password"
             placeholder="••••••••"
             error={errors.password}
             disabled={isSubmitting}
             required
             {...register("password", {
-              required: "Password is required to decrypt token",
+              required: "Password is required to sign in",
             })}
           />
 
@@ -105,10 +105,10 @@ export default function Login() {
               {isSubmitting ? (
                 <>
                   <Spinner size="sm" className="border-surface" />
-                  <span>Checking Registry...</span>
+                  <span>Verifying Credentials...</span>
                 </>
               ) : (
-                <span>Access Ledger</span>
+                <span>Sign In</span>
               )}
             </Button>
           </div>
@@ -118,7 +118,7 @@ export default function Login() {
         <div className="border-t border-primary/10 pt-4 mt-6 text-center font-sans text-xs">
           <span className="text-text/70">No registered flat? </span>
           <Link to="/register" className="text-accent underline font-semibold hover:text-accent/80">
-            Apply for Intake Intake Form
+            Register here
           </Link>
         </div>
       </Card>
